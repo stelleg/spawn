@@ -9,18 +9,18 @@ void fib(arg a){
     *ret = 1;
     return;
   }
-  long j=0, k=0;
+  volatile long j=0, k=0;
   spawn(fib, (arg){(void*)(i-1), &j}, &q);
-  fib((arg){(void*)(i-2), &k});
-  while(!j) getwork(&q);
+  spawn(fib, (arg){(void*)(i-2), &k}, &q);
+  while(!j || !k) getwork(&q);
   *ret = j + k;
 }
 
 int main(){
   q = alloc_queue(1);
-  create_workers(0, &q);
-  long j, i=35;
+  create_workers(3, &q);
+  volatile long j=0, i=35;
   spawn(fib, (arg){(void*)i, &j}, &q);
   while(!j) yield(&q);
-  printf("fib %d = %d \n", i, j);
+  printf("fib %ld = %ld \n", i, j);
 }

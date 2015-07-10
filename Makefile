@@ -1,5 +1,5 @@
 cc=gcc
-cflags=-g -O2 -std=c99 -lpthread
+cflags=-g -Wall -O2 -std=c99 -lpthread
 examples=fib hello
 
 all: ${examples}

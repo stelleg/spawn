@@ -4,7 +4,7 @@
 queue q;
 
 void hello(arg a){
-  printf("Hello from %d\n", (long ) a.r0);
+  printf("Hello from %ld\n", (long ) a.r0);
 }
 
 int main(){

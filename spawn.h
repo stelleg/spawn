@@ -9,10 +9,10 @@ bool true = 1;
 bool false = 0;
 
 uint64_t donebit = 0x800000000000000;
-uint64_t isdone(uint64_t x){return x & donebit;}
-uint64_t done(uint64_t x){return x | donebit;}
-uint64_t notdone(uint64_t x){return x & ~donebit;}
-uint64_t ind(uint64_t x){return notdone(x);}
+static inline uint64_t isdone(uint64_t x){return x & donebit;}
+static inline uint64_t done(uint64_t x){return x | donebit;}
+static inline uint64_t notdone(uint64_t x){return x & ~donebit;}
+static inline uint64_t ind(uint64_t x){return notdone(x);}
 
 // Parameters 
 typedef struct {
@@ -43,7 +43,7 @@ typedef struct {
 // Lifo queue (stack): enqueue to head, dequeue from head.
 typedef struct {
   closure* q;
-  uint64_t head;
+  volatile uint64_t head;
   size_t size;
 } queue;
 
@@ -68,6 +68,7 @@ bool enqueue(closure c, queue* q){
       return true;
     }
   }
+  return true;
 }
 
 maybe_closure dequeue(queue* q){
