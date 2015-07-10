@@ -11,14 +11,14 @@ void fib(arg a){
   }
   volatile long j=0, k=0;
   spawn(fib, (arg){(void*)(i-1), &j}, &q);
-  spawn(fib, (arg){(void*)(i-2), &k}, &q);
+  fib((arg){(void*)(i-2), &k});
   while(!j || !k) getwork(&q);
   *ret = j + k;
 }
 
 int main(){
   q = alloc_queue(1);
-  create_workers(3, &q);
+  create_workers(1, &q);
   volatile long j=0, i=35;
   spawn(fib, (arg){(void*)i, &j}, &q);
   while(!j) yield(&q);
