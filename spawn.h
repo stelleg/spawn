@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include <setjmp.h>
 
-typedef void* arg;
-typedef void (*fun)(arg a);
 typedef unsigned char bool;
 bool true = 1;
 bool false = 0;
@@ -16,11 +14,24 @@ uint64_t done(uint64_t x){return x | donebit;}
 uint64_t notdone(uint64_t x){return x & ~donebit;}
 uint64_t ind(uint64_t x){return notdone(x);}
 
-// Closure type
+// Parameters 
+typedef struct {
+  void* r0;
+  void* r1;
+  void* r2;
+  void* r3;
+  void* r4;
+  void* r5;
+  void* r6;
+} arg;
+
+//Function
+typedef void (*fun)(arg a);
+
+// Closure 
 typedef struct {
   fun f;
   arg a;
-  bool* ret;
 } closure; 
 
 // Maybe closure
@@ -76,21 +87,16 @@ void call_closure(closure c){
   fun f = c.f;
   arg a = c.a;
   f(a);
-  if(c.ret) *c.ret = true;
 }
 
-void spawn(fun f, arg* a, bool* ret, queue* q){
-  closure c = (closure) {f, a, ret}; 
+void spawn(fun f, arg a, queue* q){
+  closure c = (closure) {f, a}; 
   if(!enqueue(c, q)) call_closure(c); 
 }
 
 void getwork(queue* q){
   maybe_closure mc = dequeue(q);
   if(mc.b) call_closure(mc.c);
-}
-
-void waiton(bool* ret, queue* q){
-  while(!*ret) getwork(q);
 }
 
 void worker(void *q){
