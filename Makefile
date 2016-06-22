@@ -1,6 +1,6 @@
 cc=gcc
-cflags=-g -Wall -O2 -std=c99 -lpthread
-examples=fib hello
+cflags=-g -O2 -std=c99 -lpthread
+examples=gospawn 
 
 all: ${examples}
 

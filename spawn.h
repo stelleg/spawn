@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <setjmp.h>
+#include <stdbool.h>
+
+#define result(type) struct {type result; bool done;}
 
 typedef unsigned char bool;
 bool true = 1;
