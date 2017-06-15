@@ -1,7 +1,6 @@
-#include "spawn.h"
+#include <spawn.h>
 #include <stdio.h>
-
-queue q;
+#include <pthread.h>
 
 void hello(arg a){
   printf("Hello from iteration %ld on thread %ld\n", (long ) a.r0, pthread_self());
@@ -9,13 +8,12 @@ void hello(arg a){
 }
 
 int main(){
-  q = alloc_queue(8);
-  create_workers(3, &q);
+  init(4, 3);
   long num_iters = 16;
   volatile long counter = 0; 
   for(long i=0; i < num_iters; i++){
-    spawn(hello, (arg){(void*)i, (void*)&counter}, &q);
+    spawn(hello, (arg){(void*)i, (void*)&counter});
   }
-  while(counter < num_iters) getwork(&q);
+  while(counter < num_iters) getwork();
   printf("All hellos have been said\n");
 }
